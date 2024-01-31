@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
-	v1 "movie-app/metadata/internal/v1"
+	v1 "movie-app/rating/internal/v1"
 )
 
 func main() {
-	log.Println("Starting movie metadata service")
-	initApp("gin", "3012")
+	log.Println("Starting rating service")
+	initApp("gin", "3011")
 }
 
 func initApp(appType, port string) {

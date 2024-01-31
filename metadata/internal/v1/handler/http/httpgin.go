@@ -34,5 +34,5 @@ func (h *GinHandler) GetMetadata(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, m)
+	ctx.JSON(http.StatusOK, gin.H{"data": m})
 }

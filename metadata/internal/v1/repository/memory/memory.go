@@ -1,7 +1,8 @@
-package repository
+package memory
 
 import (
 	"context"
+	"movie-app/metadata/internal/v1/repository"
 	"movie-app/metadata/pkg/model"
 	"sync"
 )
@@ -22,7 +23,7 @@ func (r *Repository) Get(ctx context.Context, id string) (*model.Metadata, error
 	defer r.RUnlock()
 	m, ok := r.data[id]
 	if !ok {
-		return nil, ErrNotFound
+		return nil, repository.ErrNotFound
 	}
 	return m, nil
 }
