@@ -24,8 +24,8 @@ func (a *GinApp) Run() error {
 
 	r := gin.Default()
 
-	v1Router := r.Group("api/v1/metadata")
-	v1Router.GET("", ginHandler.GetMetadata)
+	v1Router := r.Group("api/v1/rating")
+	v1Router.GET("/:id", ginHandler.GetMetadata)
 
 	return r.Run(":" + a.port)
 }

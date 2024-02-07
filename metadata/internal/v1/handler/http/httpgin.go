@@ -18,7 +18,7 @@ func NewGinHandler(ctrl *metadata.Controller) *GinHandler {
 }
 
 func (h *GinHandler) GetMetadata(ctx *gin.Context) {
-	id := ctx.Request.FormValue("id")
+	id := ctx.Param("id")
 	if id == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
 		return
@@ -29,10 +29,10 @@ func (h *GinHandler) GetMetadata(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	} else if err != nil {
-		log.Printf("repository get error: %v\n", err.Error())
+		log.Printf("handler get error: %v\n", err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": m})
+	ctx.JSON(http.StatusOK, m)
 }

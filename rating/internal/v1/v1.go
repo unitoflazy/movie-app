@@ -25,8 +25,8 @@ func (g *GinApp) Run() error {
 	r := gin.Default()
 	v1Router := r.Group("api/v1/rating")
 
-	v1Router.GET("", handler.GetAggregatedRating)
-	v1Router.POST("", handler.PutRating)
+	v1Router.GET("/:id", handler.GetAggregatedRating)
+	v1Router.PUT("/:id", handler.PutRating)
 
 	return r.Run(":" + g.port)
 }

@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	log.Println("Starting movie metadata service")
-	initApp("gin", "3012")
+	log.Println("Starting movie rating service")
+	initApp("gin", "8010")
 }
 
 func initApp(appType, port string) {

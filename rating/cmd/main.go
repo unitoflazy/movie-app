@@ -7,7 +7,7 @@ import (
 
 func main() {
 	log.Println("Starting rating service")
-	initApp("gin", "3011")
+	initApp("gin", "8020")
 }
 
 func initApp(appType, port string) {

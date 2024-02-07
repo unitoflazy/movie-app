@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-// Repository is a struct that represents a metadata repository
+// Repository is a struct that represents a rating handler
 type Repository struct {
 	sync.RWMutex
 	data map[string]*model.Metadata
@@ -17,7 +17,7 @@ func New() *Repository {
 	return &Repository{data: map[string]*model.Metadata{}}
 }
 
-// Get retrieves movie metadata for by movie id.
+// Get retrieves movie rating for by movie id.
 func (r *Repository) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	r.RLock()
 	defer r.RUnlock()

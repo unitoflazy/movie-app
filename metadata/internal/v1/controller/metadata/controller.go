@@ -16,12 +16,12 @@ type Controller struct {
 	repo metadataRepository
 }
 
-// New creates a metadata service controller.
+// New creates a rating service controller.
 func New(repo metadataRepository) *Controller {
 	return &Controller{repo}
 }
 
-// Get returns movie metadata by id.
+// Get returns movie rating by id.
 func (c *Controller) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	res, err := c.repo.Get(ctx, id)
 	if err != nil && errors.Is(err, repository.ErrNotFound) {
