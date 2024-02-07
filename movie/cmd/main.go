@@ -7,7 +7,11 @@ import (
 
 func main() {
 	log.Println("Starting movie service")
-	initApp("gin", "8000", "http://localhost:8010", "http://localhost:8020")
+	initApp(
+		"gin",
+		"8000",
+		"http://localhost:8010/api/v1",
+		"http://localhost:8020/api/v1")
 }
 
 func initApp(appType string, port string, metadataAdr string, ratingAdr string) {

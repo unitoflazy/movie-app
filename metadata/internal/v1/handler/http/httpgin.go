@@ -25,7 +25,7 @@ func (h *GinHandler) GetMetadata(ctx *gin.Context) {
 	}
 
 	m, err := h.ctrl.Get(ctx, id)
-	if err != nil && errors.Is(err, repository.ErrNotFound) {
+	if errors.Is(err, repository.ErrNotFound) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	} else if err != nil {

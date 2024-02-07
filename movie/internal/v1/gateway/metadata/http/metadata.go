@@ -18,15 +18,12 @@ func New(addr string) *Gateway {
 }
 
 func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
-	req, err := http.NewRequest(http.MethodGet, g.addr+"/metadata", nil)
+	req, err := http.NewRequest(http.MethodGet, g.addr+"/metadata/"+id, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	req = req.WithContext(ctx)
-	values := req.URL.Query()
-	values.Add("id", id)
-	req.URL.RawQuery = values.Encode()
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err

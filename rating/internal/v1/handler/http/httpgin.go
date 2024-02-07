@@ -1,8 +1,10 @@
 package http
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"movie-app/rating/internal/v1/controller/rating"
+	"movie-app/rating/internal/v1/repository"
 	"movie-app/rating/pkg/model"
 	"net/http"
 )
@@ -29,7 +31,10 @@ func (h *GinHandler) GetAggregatedRating(ctx *gin.Context) {
 	}
 
 	aggregatedRating, err := h.ctrl.GetAggregatedRating(ctx, ratingType, id)
-	if err != nil {
+	if errors.Is(err, repository.ErrNotFound) {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	} else if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
