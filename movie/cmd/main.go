@@ -75,7 +75,6 @@ func registerService(version string, port int, config *_consul.Config) (*consul.
 			log.Printf("deregistered service %s id %s\n", service, svcID)
 		}
 	}
-
 	return registry, deregister, nil
 }
 
