@@ -6,27 +6,34 @@ import (
 	"errors"
 	json "github.com/bytedance/sonic"
 	"movie-app/movie/internal/v1/gateway"
+	"movie-app/pkg/discovery"
 	"movie-app/rating/pkg/model"
 	"net/http"
 )
 
 type Gateway struct {
-	addr string
+	registry discovery.Registry
 }
 
-func New(addr string) *Gateway {
-	return &Gateway{addr: addr}
+func New(registry *discovery.Registry) *Gateway {
+	return &Gateway{registry: *registry}
 }
 
 func (g *Gateway) GetAggregatedRating(ctx context.Context, ratingType model.RecordType, id model.RecordID) (float64, error) {
-	req, err := http.NewRequest(http.MethodGet, g.addr+"/rating", nil)
+	addr, err := g.registry.GetRoundRobinAddress(ctx, "rating")
+	if err != nil {
+		return 0, err
+	}
+
+	url := addr + "/rating/" + string(id)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return 0, err
 	}
 
 	req = req.WithContext(ctx)
 	values := req.URL.Query()
-	values.Add("id", string(id))
 	values.Add("type", string(ratingType))
 
 	req.URL.RawQuery = values.Encode()
@@ -56,7 +63,14 @@ func (g *Gateway) PutRating(ctx context.Context, ratingType model.RecordType, id
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPut, g.addr+"/rating", bytes.NewBuffer(payload))
+	addr, err := g.registry.GetRoundRobinAddress(ctx, "rating")
+	if err != nil {
+		return err
+	}
+
+	url := addr + "/rating/" + string(id)
+
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(payload))
 	if err != nil {
 		return err
 	}
@@ -64,7 +78,6 @@ func (g *Gateway) PutRating(ctx context.Context, ratingType model.RecordType, id
 	req = req.WithContext(ctx)
 
 	values := req.URL.Query()
-	values.Add("id", string(id))
 	values.Add("type", string(ratingType))
 
 	req.URL.RawQuery = values.Encode()

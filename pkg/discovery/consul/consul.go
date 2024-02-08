@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	consul "github.com/hashicorp/consul/api"
+	"golang.org/x/exp/rand"
 	"movie-app/pkg/discovery"
 	"strconv"
 	"strings"
@@ -14,8 +15,11 @@ type Registry struct {
 	client *consul.Client
 }
 
-func NewRegistry(config consul.Config) (*Registry, error) {
-	client, err := consul.NewClient(&config)
+func NewRegistry(config *consul.Config) (*Registry, error) {
+	if config == nil {
+		config = consul.DefaultConfig()
+	}
+	client, err := consul.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
@@ -25,10 +29,15 @@ func NewRegistry(config consul.Config) (*Registry, error) {
 func (r *Registry) Register(ctx context.Context, instanceID, serviceName, hostPort string) error {
 	parts := strings.Split(hostPort, ":")
 	if len(parts) != 2 {
-		return errors.New("hostPort must be in the form of <host>:<port>, example: localhost:8080")
+		return errors.New("hostPort must be in the form of <host>:<port>/api/<version>, example: localhost:8080/api/v1")
 	}
 
-	port, err := strconv.Atoi(parts[1])
+	apiParts := strings.Split(parts[1], "/")
+	if len(apiParts) != 3 {
+		return errors.New("hostPort must be in the form of <host>:<port>/api/<version>, example: localhost:8080/api/v1")
+	}
+
+	port, err := strconv.Atoi(apiParts[0])
 	if err != nil {
 		return err
 	}
@@ -66,4 +75,14 @@ func (r *Registry) ServiceAddresses(ctx context.Context, serviceName string) ([]
 
 func (r *Registry) ReportHealthyState(instanceID string) error {
 	return r.client.Agent().PassTTL(instanceID, "")
+}
+
+func (r *Registry) GetRoundRobinAddress(ctx context.Context, serviceName string) (string, error) {
+	addrs, err := r.ServiceAddresses(ctx, serviceName)
+	if err != nil {
+		return "", err
+	} else if len(addrs) == 0 {
+		return "", discovery.ErrNotFound
+	}
+	return addrs[rand.Intn(len(addrs))], nil
 }

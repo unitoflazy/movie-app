@@ -6,25 +6,24 @@ import (
 	metahttp "movie-app/movie/internal/v1/gateway/metadata/http"
 	ratinghttp "movie-app/movie/internal/v1/gateway/rating/http"
 	"movie-app/movie/internal/v1/handler/http"
+	"movie-app/pkg/discovery"
 )
 
 type GinApp struct {
-	port        string
-	metadataAdr string
-	ratingAdr   string
+	port     string
+	registry *discovery.Registry
 }
 
-func NewGinApp(port string, metadataAdr string, ratingAdr string) *GinApp {
+func NewGinApp(port string, registry *discovery.Registry) *GinApp {
 	return &GinApp{
-		port:        port,
-		metadataAdr: metadataAdr,
-		ratingAdr:   ratingAdr,
+		port:     port,
+		registry: registry,
 	}
 }
 
 func (g *GinApp) Run() error {
-	metadataGW := metahttp.New(g.metadataAdr)
-	ratingGW := ratinghttp.New(g.ratingAdr)
+	metadataGW := metahttp.New(g.registry)
+	ratingGW := ratinghttp.New(g.registry)
 	ctrl := controller.New(ratingGW, metadataGW)
 	handler := http.NewGinHandler(ctrl)
 

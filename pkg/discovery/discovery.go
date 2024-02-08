@@ -14,13 +14,16 @@ type Registry interface {
 	Register(ctx context.Context, instanceID string, serviceName string, hostPort string) error
 
 	// Deregister removes a service instance record from the registry.
-	Deregister(ctx context.Context, instanceID string, serviceName string) error
+	Deregister(ctx context.Context, instanceID string) error
 
 	// ServiceAddresses returns the list of addresses of  active instances of the given service.
-	ServiceAddresses(ctx context.Context, serviceID string) ([]string, error)
+	ServiceAddresses(ctx context.Context, serviceName string) ([]string, error)
 
 	// ReportHealthyState is a push mechanism for reporting healthy state to the registry.
-	ReportHealthyState(instanceID string, serviceName string) error
+	ReportHealthyState(instanceID string) error
+
+	// GetRoundRobinAddress returns a service address using a round-robin strategy.
+	GetRoundRobinAddress(ctx context.Context, serviceName string) (string, error)
 }
 
 // ErrNotFound is returned when no service addresses are found.
