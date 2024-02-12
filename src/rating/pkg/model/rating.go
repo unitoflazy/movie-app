@@ -9,7 +9,7 @@ type RecordID string
 type RecordType string
 
 const (
-	RecordTypeMovie = RecordType("movie")
+	RecordTypeMovie = RecordType("api")
 )
 
 type UserID string

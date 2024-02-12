@@ -16,14 +16,14 @@ import (
 )
 
 var (
-	service = "movie"
+	service = "api"
 )
 
 func main() {
 	var port int
 	flag.IntVar(&port, "port", 8000, "API handler port")
 	flag.Parse()
-	log.Println("Starting movie service on port", port)
+	log.Println("Starting api service on port", port)
 
 	registry, deregister, err := registerService("v1", port, &_consul.Config{
 		Address: "localhost:8500",

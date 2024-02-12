@@ -17,7 +17,7 @@ func New() *Repository {
 	return &Repository{data: map[string]*model.Metadata{}}
 }
 
-// Get retrieves movie rating for by movie id.
+// Get retrieves api rating for by api id.
 func (r *Repository) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	r.RLock()
 	defer r.RUnlock()

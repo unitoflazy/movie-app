@@ -28,7 +28,7 @@ func (g *GinApp) Run() error {
 	handler := http.NewGinHandler(ctrl)
 
 	r := gin.Default()
-	v1Router := r.Group("api/v1/movie")
+	v1Router := r.Group("api/v1/api")
 	v1Router.GET("/:id", handler.GetMovieDetails)
 
 	return r.Run(":" + g.port)

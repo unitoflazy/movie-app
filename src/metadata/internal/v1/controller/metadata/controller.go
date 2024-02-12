@@ -21,7 +21,7 @@ func New(repo metadataRepository) *Controller {
 	return &Controller{repo}
 }
 
-// Get returns movie rating by id.
+// Get returns api rating by id.
 func (c *Controller) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	res, err := c.repo.Get(ctx, id)
 	if err != nil && errors.Is(err, repository.ErrNotFound) {
