@@ -1,6 +1,6 @@
 package model
 
 type RateMovieRequest struct {
-	UserID string `json:"userId" binding:"required"`
-	Value  int    `json:"value" binding:"required"`
+	UserID string `json:"user_id" binding:"required"`
+	Value  int    `json:"rating_value" binding:"required"`
 }

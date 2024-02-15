@@ -41,7 +41,7 @@ func main() {
 		}
 	}()
 
-	initApp("gin", fmt.Sprintf("%d", port))
+	initApp("grpc", fmt.Sprintf("%d", port))
 }
 
 func registerService(version string, port int, config *_consul.Config) (func(), error) {
@@ -82,6 +82,8 @@ func initApp(appType, port string) {
 
 	if appType == "gin" {
 		err = v1.NewGinApp(port).Run()
+	} else if appType == "grpc" {
+		err = v1.NewGRPCApp("localhost:" + port).Run()
 	}
 
 	if err != nil {

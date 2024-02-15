@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	_consul "github.com/hashicorp/consul/api"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	v1 "movie-app/movie/internal/v1"
 	"movie-app/pkg/discovery"
@@ -43,7 +45,7 @@ func main() {
 		}
 	}()
 
-	initApp("gin", fmt.Sprintf("%d", port), registry)
+	initApp("grpc", fmt.Sprintf("%d", port), registry)
 }
 
 func registerService(version string, port int, config *_consul.Config) (*consul.Registry, func(), error) {
@@ -83,6 +85,18 @@ func initApp(appType, port string, registry discovery.Registry) {
 
 	if appType == "gin" {
 		err = v1.NewGinApp(port, &registry).Run()
+	} else if appType == "grpc" {
+		err = v1.NewGRPCApp(
+			"localhost:"+port,
+			&registry,
+			map[string][]grpc.DialOption{
+				"metadata": []grpc.DialOption{
+					grpc.WithTransportCredentials(insecure.NewCredentials()),
+				},
+				"rating": []grpc.DialOption{
+					grpc.WithTransportCredentials(insecure.NewCredentials()),
+				},
+			}).Run()
 	}
 
 	if err != nil {

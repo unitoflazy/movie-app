@@ -62,8 +62,8 @@ func (h *GinHandler) PutRating(ctx *gin.Context) {
 	}
 
 	if err := h.ctrl.PutRating(ctx, ratingType, id, &model.Rating{
-		Value:  req.Value,
-		UserID: req.UserID,
+		Value:  model.RatingValue(req.Value),
+		UserID: model.UserID(req.UserID),
 	}); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
